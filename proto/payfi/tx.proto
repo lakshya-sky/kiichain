@@ -1,0 +1,13 @@
+syntax = "proto3";
+package kiichain.kiichain3.payfi;
+
+// this line is used by starport scaffolding # proto/tx/import
+
+option go_package = "github.com/kiichain/kiichain3/x/payfi/types";
+
+// Msg defines the Msg service.
+service Msg {
+    // this line is used by starport scaffolding # proto/tx/rpc
+}
+
+// this line is used by starport scaffolding # proto/tx/message

@@ -133,6 +133,11 @@ import (
 	tokenfactorymodule "github.com/kiichain/kiichain3/x/tokenfactory"
 	tokenfactorykeeper "github.com/kiichain/kiichain3/x/tokenfactory/keeper"
 	tokenfactorytypes "github.com/kiichain/kiichain3/x/tokenfactory/types"
+
+	payfimodule "github.com/kiichain/kiichain3/x/payfi"
+	payfikeeper "github.com/kiichain/kiichain3/x/payfi/keeper"
+	payfitypes "github.com/kiichain/kiichain3/x/payfi/types"
+
 	"github.com/rakyll/statik/fs"
 	"github.com/sei-protocol/sei-db/ss"
 	seidb "github.com/sei-protocol/sei-db/ss/types"
@@ -204,6 +209,7 @@ var (
 		wasm.AppModuleBasic{},
 		epochmodule.AppModuleBasic{},
 		tokenfactorymodule.AppModuleBasic{},
+		payfimodule.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
 	)
 
@@ -220,6 +226,7 @@ var (
 		wasm.ModuleName:                {authtypes.Burner},
 		evmtypes.ModuleName:            {authtypes.Minter, authtypes.Burner},
 		tokenfactorytypes.ModuleName:   {authtypes.Minter, authtypes.Burner},
+		payfitypes.ModuleName:          {authtypes.Minter, authtypes.Burner},
 		// this line is used by starport scaffolding # stargate/app/maccPerms
 	}
 
@@ -332,6 +339,7 @@ type App struct {
 	EpochKeeper epochmodulekeeper.Keeper
 
 	TokenFactoryKeeper tokenfactorykeeper.Keeper
+	PayfiKeeper        payfikeeper.Keeper
 
 	// mm is the module manager
 	mm *module.Manager
@@ -404,6 +412,7 @@ func New(
 		evmtypes.StoreKey, wasm.StoreKey,
 		epochmoduletypes.StoreKey,
 		tokenfactorytypes.StoreKey,
+		payfitypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey, evmtypes.TransientStoreKey)
@@ -535,6 +544,13 @@ func New(
 		tokenFactoryConfig,
 	)
 
+	app.PayfiKeeper = payfikeeper.NewKeeper(
+		appCodec,
+		app.keys[payfitypes.StoreKey],
+		app.keys[payfitypes.StoreKey],
+		app.GetSubspace(payfitypes.ModuleName),
+	)
+
 	// The last arguments can contain custom message handlers, and custom query handlers,
 	// if we want to allow any custom callbacks
 	supportedFeatures := "iterator,staking,stargate,sei"
@@ -657,6 +673,7 @@ func New(
 		AddRoute(ibcclienttypes.RouterKey, ibcclient.NewClientProposalHandler(app.IBCKeeper.ClientKeeper)).
 		AddRoute(minttypes.RouterKey, mint.NewProposalHandler(app.MintKeeper)).
 		AddRoute(tokenfactorytypes.RouterKey, tokenfactorymodule.NewProposalHandler(app.TokenFactoryKeeper)).
+		AddRoute(payfitypes.RouterKey, payfimodule.NewProposalHandler(app.PayfiKeeper)).
 		AddRoute(acltypes.ModuleName, aclmodule.NewProposalHandler(app.AccessControlKeeper)).
 		AddRoute(evmtypes.RouterKey, evm.NewProposalHandler(app.EvmKeeper))
 	if len(enabledProposals) != 0 {
@@ -733,6 +750,7 @@ func New(
 		transferModule,
 		epochModule,
 		tokenfactorymodule.NewAppModule(app.TokenFactoryKeeper, app.AccountKeeper, app.BankKeeper),
+		payfimodule.NewAppModule(appCodec, app.PayfiKeeper, app.AccountKeeper, app.BankKeeper),
 		authzmodule.NewAppModule(appCodec, app.AuthzKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
@@ -764,6 +782,7 @@ func New(
 		evmtypes.ModuleName,
 		wasm.ModuleName,
 		tokenfactorytypes.ModuleName,
+		payfitypes.ModuleName,
 		acltypes.ModuleName,
 	)
 
@@ -790,6 +809,7 @@ func New(
 		evmtypes.ModuleName,
 		wasm.ModuleName,
 		tokenfactorytypes.ModuleName,
+		payfitypes.ModuleName,
 		acltypes.ModuleName,
 	)
 
@@ -818,6 +838,7 @@ func New(
 		authz.ModuleName,
 		feegrant.ModuleName,
 		tokenfactorytypes.ModuleName,
+		payfitypes.ModuleName,
 		epochmoduletypes.ModuleName,
 		wasm.ModuleName,
 		evmtypes.ModuleName,
@@ -848,6 +869,7 @@ func New(
 		transferModule,
 		epochModule,
 		tokenfactorymodule.NewAppModule(app.TokenFactoryKeeper, app.AccountKeeper, app.BankKeeper),
+		payfimodule.NewAppModule(appCodec, app.PayfiKeeper, app.AccountKeeper, app.BankKeeper),
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 	app.sm.RegisterStoreDecoders()
@@ -1912,6 +1934,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(evmtypes.ModuleName)
 	paramsKeeper.Subspace(epochmoduletypes.ModuleName)
 	paramsKeeper.Subspace(tokenfactorytypes.ModuleName)
+	paramsKeeper.Subspace(payfitypes.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 
 	return paramsKeeper

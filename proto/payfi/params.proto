@@ -1,0 +1,12 @@
+syntax = "proto3";
+package kiichain.kiichain3.payfi;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/kiichain/kiichain3/x/payfi/types";
+
+// Params defines the parameters for the module.
+message Params {
+  option (gogoproto.goproto_stringer) = false;
+  
+}
