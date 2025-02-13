@@ -28,6 +28,12 @@ import (
 	"github.com/kiichain/kiichain3/x/payfi/types"
 )
 
+func RandomAccAddress() sdk.AccAddress {
+	priv, addr := keyPubAddr()
+	_ = priv
+	return addr
+}
+
 func createAccountKeeper(cdc codec.Codec, kvStoreKey *sdk.KVStoreKey, subspace paramstypes.Subspace) authkeeper.AccountKeeper {
 	maccPerms := map[string][]string{ // module account permissions
 		authtypes.FeeCollectorName:     nil,

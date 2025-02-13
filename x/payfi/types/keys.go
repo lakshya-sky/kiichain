@@ -43,11 +43,11 @@ func MerchantKeyPrefix(merchantAddress sdk.AccAddress) []byte {
 	return bytes
 }
 
-func PaymentKeyPrefix(merchantAddress sdk.AccAddress, paymentId int64) []byte {
+func PaymentKeyPrefix(merchantAddress sdk.AccAddress, paymentId uint64) []byte {
 	bytes := make([]byte, 0)
 	bytes = append(bytes, KeyPrefix(PaymentKey)...)
 	bytes = append(bytes, merchantAddress.Bytes()...)
-	bytes = append(bytes, []byte(strconv.FormatInt(paymentId, 10))...)
+	bytes = append(bytes, []byte(strconv.FormatUint(paymentId, 10))...)
 	return bytes
 }
 

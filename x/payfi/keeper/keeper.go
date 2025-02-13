@@ -98,7 +98,7 @@ func (k Keeper) SetPayment(ctx sdk.Context, payment types.Payment) {
 	store.Set(types.PaymentKeyPrefix(merchantAddr, payment.PaymentId), k.cdc.MustMarshal(&payment))
 }
 
-func (k Keeper) GetPayment(ctx sdk.Context, merchantAddress sdk.AccAddress, paymentId int64) *types.Payment {
+func (k Keeper) GetPayment(ctx sdk.Context, merchantAddress sdk.AccAddress, paymentId uint64) *types.Payment {
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(types.PaymentKeyPrefix(merchantAddress, paymentId))
 	if bz == nil {

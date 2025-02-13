@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"context"
-	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -37,11 +36,11 @@ func (k Keeper) AllPayments(ctx context.Context, req *types.QueryAllPaymentsRequ
 
 	var payments []*types.Payment
 	pageRes, err := query.Paginate(paymentStore, req.Pagination, func(key []byte, value []byte) error {
-		var payment *types.Payment
-		if err := k.cdc.Unmarshal(value, payment); err != nil {
+		var payment types.Payment
+		if err := k.cdc.Unmarshal(value, &payment); err != nil {
 			return err
 		}
-		payments = append(payments, payment)
+		payments = append(payments, &payment)
 		return nil
 	})
 	if err != nil {
@@ -64,10 +63,7 @@ func (k Keeper) Payment(ctx context.Context, req *types.QueryPaymentRequest) (*t
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid merchant address")
 	}
-	paymentId, err := strconv.ParseInt(req.PaymentId, 10, 64)
-	if err != nil {
-		return nil, status.Error(codes.InvalidArgument, "invalid payment id")
-	}
+	paymentId := req.PaymentId
 
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
 	payment := k.GetPayment(sdkCtx, merchantAddress, paymentId)
@@ -95,11 +91,11 @@ func (k Keeper) MerchantPayments(ctx context.Context, req *types.QueryMerchantPa
 
 	var payments []*types.Payment
 	pageRes, err := query.Paginate(merchantPaymentStore, req.Pagination, func(key []byte, value []byte) error {
-		var payment *types.Payment
-		if err := k.cdc.Unmarshal(value, payment); err != nil {
+		var payment types.Payment
+		if err := k.cdc.Unmarshal(value, &payment); err != nil {
 			return err
 		}
-		payments = append(payments, payment)
+		payments = append(payments, &payment)
 		return nil
 	})
 	if err != nil {
@@ -162,11 +158,11 @@ func (k Keeper) AllMerchants(ctx context.Context, req *types.QueryAllMerchantsRe
 
 	var merchants []*types.Merchant
 	pageRes, err := query.Paginate(merchantStore, req.Pagination, func(key []byte, value []byte) error {
-		var merchant *types.Merchant
-		if err := k.cdc.Unmarshal(value, merchant); err != nil {
+		var merchant types.Merchant
+		if err := k.cdc.Unmarshal(value, &merchant); err != nil {
 			return err
 		}
-		merchants = append(merchants, merchant)
+		merchants = append(merchants, &merchant)
 		return nil
 	})
 	if err != nil {
@@ -191,11 +187,11 @@ func (k Keeper) AllRevenue(ctx context.Context, req *types.QueryAllRevenueReques
 
 	var revenues []*types.MerchantRevenue
 	pageRes, err := query.Paginate(revenueStore, req.Pagination, func(key []byte, value []byte) error {
-		var revenue *types.MerchantRevenue
-		if err := k.cdc.Unmarshal(value, revenue); err != nil {
+		var revenue types.MerchantRevenue
+		if err := k.cdc.Unmarshal(value, &revenue); err != nil {
 			return err
 		}
-		revenues = append(revenues, revenue)
+		revenues = append(revenues, &revenue)
 		return nil
 	})
 	if err != nil {

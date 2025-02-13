@@ -310,5 +310,5 @@ func TestPayMerchantPaymentAndRevenue(t *testing.T) {
 	revenue := k.GetMerchantRevenue(sdk.UnwrapSDKContext(ctx), merchantAddress)
 	require.NotNil(t, revenue)
 	require.Equal(t, paymentMsg.Amount, revenue.TotalRevenue)
-	require.Equal(t, revenue.TotalPayments, int64(1))
+	require.Equal(t, revenue.TotalPayments, uint64(1))
 }
