@@ -128,6 +128,30 @@ func (k msgServer) PayMerchant(goCtx context.Context, msg *types.MsgPayMerchant)
 		return nil, sdkerrors.Wrapf(err, "failed to send %v from %s to %s", msg.Amount, payerAddress, merchantAddress)
 	}
 
+	merchantRevenue := k.GetMerchantRevenue(ctx, merchantAddress)
+	if merchantRevenue == nil {
+		merchantRevenue = &types.MerchantRevenue{
+			MerchantAddress: merchantAddress.String(),
+			TotalPayments:   0,
+			TotalRevenue:    sdk.NewCoins(),
+		}
+	}
+	merchantRevenue.TotalPayments++
+	totalRevenue := merchantRevenue.TotalRevenue.Sort()
+	paymentAmount := msg.Amount.Sort()
+	merchantRevenue.TotalRevenue = totalRevenue.Add(paymentAmount...)
+	k.SetMerchantRevenue(ctx, *merchantRevenue)
+
+	payment := types.Payment{
+		PaymentId:       merchantRevenue.TotalPayments,
+		PayerAddress:    payerAddress.String(),
+		MerchantAddress: merchantAddress.String(),
+		Timestamp:       ctx.BlockHeight(),
+		Amount:          msg.Amount,
+	}
+
+	k.SetPayment(ctx, payment)
+
 	return &types.MsgPayMerchantResponse{
 		MerchantAddress: merchantAddress.String(),
 	}, nil

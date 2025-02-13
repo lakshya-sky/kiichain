@@ -30,7 +30,8 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-// this line is used by starport scaffolding # proto/tx/message
+// MsgRegisterMerchant represents a message to register a new merchant on the platform
+// with their business details like name, address, contact information etc.
 type MsgRegisterMerchant struct {
 	CreatorAddress      string `protobuf:"bytes,1,opt,name=creator_address,json=creatorAddress,proto3" json:"creator_address,omitempty"`
 	BusinessName        string `protobuf:"bytes,2,opt,name=business_name,json=businessName,proto3" json:"business_name,omitempty"`
@@ -115,6 +116,8 @@ func (m *MsgRegisterMerchant) GetBusinessDescription() string {
 	return ""
 }
 
+// MsgRegisterMerchantResponse is returned after successful merchant registration
+// containing the newly created merchant address
 type MsgRegisterMerchantResponse struct {
 	MerchantAddress string `protobuf:"bytes,1,opt,name=merchant_address,json=merchantAddress,proto3" json:"merchant_address,omitempty"`
 }
@@ -159,6 +162,8 @@ func (m *MsgRegisterMerchantResponse) GetMerchantAddress() string {
 	return ""
 }
 
+// MsgVerifyMerchant represents a message sent by a KYC admin to verify
+// a registered merchant after completing KYC checks
 type MsgVerifyMerchant struct {
 	KycAdminAddress string `protobuf:"bytes,1,opt,name=kyc_admin_address,json=kycAdminAddress,proto3" json:"kyc_admin_address,omitempty"`
 	MerchantAddress string `protobuf:"bytes,2,opt,name=merchant_address,json=merchantAddress,proto3" json:"merchant_address,omitempty"`
@@ -211,6 +216,7 @@ func (m *MsgVerifyMerchant) GetMerchantAddress() string {
 	return ""
 }
 
+// MsgVerifyMerchantResponse is returned after successful merchant verification
 type MsgVerifyMerchantResponse struct {
 	MerchantAddress string `protobuf:"bytes,1,opt,name=merchant_address,json=merchantAddress,proto3" json:"merchant_address,omitempty"`
 }
@@ -255,6 +261,8 @@ func (m *MsgVerifyMerchantResponse) GetMerchantAddress() string {
 	return ""
 }
 
+// MsgPayMerchant represents a payment message sent to a merchant
+// including payment amount and invoice reference
 type MsgPayMerchant struct {
 	MerchantAddress  string                                   `protobuf:"bytes,1,opt,name=merchant_address,json=merchantAddress,proto3" json:"merchant_address,omitempty"`
 	PayerAddress     string                                   `protobuf:"bytes,2,opt,name=payer_address,json=payerAddress,proto3" json:"payer_address,omitempty"`
@@ -323,6 +331,7 @@ func (m *MsgPayMerchant) GetAmount() github_com_cosmos_cosmos_sdk_types.Coins {
 	return nil
 }
 
+// MsgPayMerchantResponse is returned after successful payment to a merchant
 type MsgPayMerchantResponse struct {
 	MerchantAddress string `protobuf:"bytes,1,opt,name=merchant_address,json=merchantAddress,proto3" json:"merchant_address,omitempty"`
 }
@@ -429,9 +438,11 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgClient interface {
-	// this line is used by starport scaffolding # proto/tx/rpc
+	// RegisterMerchant creates a new merchant account with provided business details
 	RegisterMerchant(ctx context.Context, in *MsgRegisterMerchant, opts ...grpc.CallOption) (*MsgRegisterMerchantResponse, error)
+	// VerifyMerchant allows KYC admins to verify merchant accounts after KYC checks
 	VerifyMerchant(ctx context.Context, in *MsgVerifyMerchant, opts ...grpc.CallOption) (*MsgVerifyMerchantResponse, error)
+	// PayMerchant processes a payment from a payer to a merchant with specified amount
 	PayMerchant(ctx context.Context, in *MsgPayMerchant, opts ...grpc.CallOption) (*MsgPayMerchantResponse, error)
 }
 
@@ -472,9 +483,11 @@ func (c *msgClient) PayMerchant(ctx context.Context, in *MsgPayMerchant, opts ..
 
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
-	// this line is used by starport scaffolding # proto/tx/rpc
+	// RegisterMerchant creates a new merchant account with provided business details
 	RegisterMerchant(context.Context, *MsgRegisterMerchant) (*MsgRegisterMerchantResponse, error)
+	// VerifyMerchant allows KYC admins to verify merchant accounts after KYC checks
 	VerifyMerchant(context.Context, *MsgVerifyMerchant) (*MsgVerifyMerchantResponse, error)
+	// PayMerchant processes a payment from a payer to a merchant with specified amount
 	PayMerchant(context.Context, *MsgPayMerchant) (*MsgPayMerchantResponse, error)
 }
 

@@ -92,6 +92,40 @@ func (k Keeper) GetMerchant(ctx sdk.Context, merchantAddress sdk.AccAddress) *ty
 	return &merchant
 }
 
+func (k Keeper) SetPayment(ctx sdk.Context, payment types.Payment) {
+	store := ctx.KVStore(k.storeKey)
+	merchantAddr := sdk.MustAccAddressFromBech32(payment.MerchantAddress)
+	store.Set(types.PaymentKeyPrefix(merchantAddr, payment.PaymentId), k.cdc.MustMarshal(&payment))
+}
+
+func (k Keeper) GetPayment(ctx sdk.Context, merchantAddress sdk.AccAddress, paymentId int64) *types.Payment {
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get(types.PaymentKeyPrefix(merchantAddress, paymentId))
+	if bz == nil {
+		return nil
+	}
+	var payment types.Payment
+	k.cdc.MustUnmarshal(bz, &payment)
+	return &payment
+}
+
+func (k Keeper) SetMerchantRevenue(ctx sdk.Context, merchantRevenue types.MerchantRevenue) {
+	store := ctx.KVStore(k.storeKey)
+	merchantAddr := sdk.MustAccAddressFromBech32(merchantRevenue.MerchantAddress)
+	store.Set(types.MerchantRevenueKeyPrefix(merchantAddr), k.cdc.MustMarshal(&merchantRevenue))
+}
+
+func (k Keeper) GetMerchantRevenue(ctx sdk.Context, merchantAddress sdk.AccAddress) *types.MerchantRevenue {
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get(types.MerchantRevenueKeyPrefix(merchantAddress))
+	if bz == nil {
+		return nil
+	}
+	var merchantRevenue types.MerchantRevenue
+	k.cdc.MustUnmarshal(bz, &merchantRevenue)
+	return &merchantRevenue
+}
+
 // BankCoinTransferrer replicates the cosmos-sdk behaviour as in
 // https://github.com/cosmos/cosmos-sdk/blob/v0.41.4/x/bank/keeper/msg_server.go#L26
 type BankCoinTransferrer struct {

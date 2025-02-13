@@ -60712,16 +60712,25 @@ definitions:
     properties:
       merchant_address:
         type: string
+    title: MsgPayMerchantResponse is returned after successful payment to a merchant
   kiichain.kiichain3.payfi.MsgRegisterMerchantResponse:
     type: object
     properties:
       merchant_address:
         type: string
+    title: >-
+      MsgRegisterMerchantResponse is returned after successful merchant
+      registration
+
+      containing the newly created merchant address
   kiichain.kiichain3.payfi.MsgVerifyMerchantResponse:
     type: object
     properties:
       merchant_address:
         type: string
+    title: >-
+      MsgVerifyMerchantResponse is returned after successful merchant
+      verification
   kiichain.kiichain3.payfi.Params:
     type: object
     description: Params defines the parameters for the module.

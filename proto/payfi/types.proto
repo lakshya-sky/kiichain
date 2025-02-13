@@ -16,4 +16,28 @@ message Merchant {
   string business_email = 6;
   string business_description = 7;
   bool kyc_status = 8;
+  int64 kyc_timestamp = 9;
+  int64 kyc_expiration_timestamp = 10;
+}
+
+// Merchant Revenue represents kpis and revenue data for a merchant
+message MerchantRevenue {
+  string merchant_address = 1;
+  int64 total_payments = 2;
+  repeated cosmos.base.v1beta1.Coin total_revenue = 3 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+}
+
+// Payment represents a payment from a payer to a merchant
+message Payment {
+  int64 payment_id = 1;
+  string payer_address = 2;
+  string merchant_address = 3;
+  int64 timestamp = 4;
+  repeated cosmos.base.v1beta1.Coin amount = 5 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
 }

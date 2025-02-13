@@ -16,7 +16,7 @@ func NewHandler(k keeper.Keeper) sdk.Handler {
 	// this line is used by starport scaffolding # handler/msgServer
 
 	return func(ctx sdk.Context, msg sdk.Msg) (*sdk.Result, error) {
-		ctx = ctx.WithEventManager(sdk.NewEventManager())
+		_ = ctx.WithEventManager(sdk.NewEventManager())
 
 		switch msg := msg.(type) {
 		// this line is used by starport scaffolding # 1
@@ -28,7 +28,7 @@ func NewHandler(k keeper.Keeper) sdk.Handler {
 }
 
 func NewProposalHandler(_ keeper.Keeper) govtypes.Handler {
-	return func(ctx sdk.Context, content govtypes.Content) error {
+	return func(_ sdk.Context, content govtypes.Content) error {
 		return sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "unrecognized payfi proposal content type")
 	}
 }
