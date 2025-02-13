@@ -1,10 +1,11 @@
 syntax = "proto3";
 package kiichain.kiichain3.payfi;
 
+import "cosmos/base/query/v1beta1/pagination.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
-import "cosmos/base/query/v1beta1/pagination.proto";
 import "payfi/params.proto";
+import "payfi/types.proto";
 // this line is used by starport scaffolding # 1
 
 option go_package = "github.com/kiichain/kiichain3/x/payfi/types";
@@ -14,6 +15,34 @@ service Query {
   // Parameters queries the parameters of the module.
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/kiichain/kiichain3/payfi/params";
+  }
+
+  rpc AllPayments(QueryAllPaymentsRequest) returns (QueryAllPaymentsResponse) {
+    option (google.api.http).get = "/kiichain/kiichain3/payfi/all_payments";
+  }
+
+  rpc Payment(QueryPaymentRequest) returns (QueryPaymentResponse) {
+    option (google.api.http).get = "/kiichain/kiichain3/payfi/payment";
+  }
+
+  rpc MerchantPayments(QueryMerchantPaymentsRequest) returns (QueryMerchantPaymentsResponse) {
+    option (google.api.http).get = "/kiichain/kiichain3/payfi/merchant_payments";
+  }
+
+  rpc MerchantRevenue(QueryMerchantRevenueRequest) returns (QueryMerchantRevenueResponse) {
+    option (google.api.http).get = "/kiichain/kiichain3/payfi/merchant_revenue";
+  }
+
+  rpc Merchant(QueryMerchantRequest) returns (QueryMerchantResponse) {
+    option (google.api.http).get = "/kiichain/kiichain3/payfi/merchant";
+  }
+
+  rpc AllMerchants(QueryAllMerchantsRequest) returns (QueryAllMerchantsResponse) {
+    option (google.api.http).get = "/kiichain/kiichain3/payfi/all_merchants";
+  }
+
+  rpc AllRevenue(QueryAllRevenueRequest) returns (QueryAllRevenueResponse) {
+    option (google.api.http).get = "/kiichain/kiichain3/payfi/all_revenue";
   }
   // this line is used by starport scaffolding # 2
 }
@@ -25,6 +54,68 @@ message QueryParamsRequest {}
 message QueryParamsResponse {
   // params holds all the parameters of this module.
   Params params = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllPaymentsRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllPaymentsResponse {
+  repeated Payment payments = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryPaymentRequest {
+  string payment_id = 1;
+  string merchant_address = 2;
+}
+
+message QueryPaymentResponse {
+  Payment payment = 1;
+}
+
+message QueryMerchantPaymentsRequest {
+  string merchant_address = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+message QueryMerchantPaymentsResponse {
+  repeated Payment payments = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryMerchantRevenueRequest {
+  string merchant_address = 1;
+}
+
+message QueryMerchantRevenueResponse {
+  MerchantRevenue revenue = 1;
+}
+
+message QueryMerchantRequest {
+  string merchant_address = 1;
+}
+
+message QueryMerchantResponse {
+  Merchant merchant = 1;
+}
+
+message QueryAllMerchantsRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllMerchantsResponse {
+  repeated Merchant merchants = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryAllRevenueRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllRevenueResponse {
+  repeated MerchantRevenue revenues = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 // this line is used by starport scaffolding # 3

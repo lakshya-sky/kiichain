@@ -35734,6 +35734,711 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
+  /kiichain/kiichain3/payfi/all_merchants:
+    get:
+      operationId: KiichainKiichain3PayfiAllMerchants
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              merchants:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    merchant_address:
+                      type: string
+                    creator_address:
+                      type: string
+                    business_name:
+                      type: string
+                    business_address:
+                      type: string
+                    business_phone:
+                      type: string
+                    business_email:
+                      type: string
+                    business_description:
+                      type: string
+                    kyc_status:
+                      type: boolean
+                    kyc_timestamp:
+                      type: string
+                      format: int64
+                    kyc_expiration_timestamp:
+                      type: string
+                      format: int64
+                  title: Merchant represents a registered merchant in the system
+              pagination:
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    title: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+                description: >-
+                  PageResponse is to be embedded in gRPC response messages where
+                  the
+
+                  corresponding request message has used PageRequest.
+
+                   message SomeResponse {
+                           repeated Bar results = 1;
+                           PageResponse page = 2;
+                   }
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
+  /kiichain/kiichain3/payfi/all_payments:
+    get:
+      operationId: KiichainKiichain3PayfiAllPayments
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              payments:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    payment_id:
+                      type: string
+                      format: int64
+                    payer_address:
+                      type: string
+                    merchant_address:
+                      type: string
+                    timestamp:
+                      type: string
+                      format: int64
+                    amount:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          denom:
+                            type: string
+                          amount:
+                            type: string
+                        description: >-
+                          Coin defines a token with a denomination and an
+                          amount.
+
+
+                          NOTE: The amount field is an Int which implements the
+                          custom method
+
+                          signatures required by gogoproto.
+                  title: Payment represents a payment from a payer to a merchant
+              pagination:
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    title: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+                description: >-
+                  PageResponse is to be embedded in gRPC response messages where
+                  the
+
+                  corresponding request message has used PageRequest.
+
+                   message SomeResponse {
+                           repeated Bar results = 1;
+                           PageResponse page = 2;
+                   }
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
+  /kiichain/kiichain3/payfi/all_revenue:
+    get:
+      operationId: KiichainKiichain3PayfiAllRevenue
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              revenues:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    merchant_address:
+                      type: string
+                    total_payments:
+                      type: string
+                      format: int64
+                    total_revenue:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          denom:
+                            type: string
+                          amount:
+                            type: string
+                        description: >-
+                          Coin defines a token with a denomination and an
+                          amount.
+
+
+                          NOTE: The amount field is an Int which implements the
+                          custom method
+
+                          signatures required by gogoproto.
+                  title: >-
+                    Merchant Revenue represents kpis and revenue data for a
+                    merchant
+              pagination:
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    title: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+                description: >-
+                  PageResponse is to be embedded in gRPC response messages where
+                  the
+
+                  corresponding request message has used PageRequest.
+
+                   message SomeResponse {
+                           repeated Bar results = 1;
+                           PageResponse page = 2;
+                   }
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
+  /kiichain/kiichain3/payfi/merchant:
+    get:
+      operationId: KiichainKiichain3PayfiMerchant
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              merchant:
+                type: object
+                properties:
+                  merchant_address:
+                    type: string
+                  creator_address:
+                    type: string
+                  business_name:
+                    type: string
+                  business_address:
+                    type: string
+                  business_phone:
+                    type: string
+                  business_email:
+                    type: string
+                  business_description:
+                    type: string
+                  kyc_status:
+                    type: boolean
+                  kyc_timestamp:
+                    type: string
+                    format: int64
+                  kyc_expiration_timestamp:
+                    type: string
+                    format: int64
+                title: Merchant represents a registered merchant in the system
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: merchant_address
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
+  /kiichain/kiichain3/payfi/merchant_payments:
+    get:
+      operationId: KiichainKiichain3PayfiMerchantPayments
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              payments:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    payment_id:
+                      type: string
+                      format: int64
+                    payer_address:
+                      type: string
+                    merchant_address:
+                      type: string
+                    timestamp:
+                      type: string
+                      format: int64
+                    amount:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          denom:
+                            type: string
+                          amount:
+                            type: string
+                        description: >-
+                          Coin defines a token with a denomination and an
+                          amount.
+
+
+                          NOTE: The amount field is an Int which implements the
+                          custom method
+
+                          signatures required by gogoproto.
+                  title: Payment represents a payment from a payer to a merchant
+              pagination:
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    title: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+                description: >-
+                  PageResponse is to be embedded in gRPC response messages where
+                  the
+
+                  corresponding request message has used PageRequest.
+
+                   message SomeResponse {
+                           repeated Bar results = 1;
+                           PageResponse page = 2;
+                   }
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: merchant_address
+          in: query
+          required: false
+          type: string
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
+  /kiichain/kiichain3/payfi/merchant_revenue:
+    get:
+      operationId: KiichainKiichain3PayfiMerchantRevenue
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              revenue:
+                type: object
+                properties:
+                  merchant_address:
+                    type: string
+                  total_payments:
+                    type: string
+                    format: int64
+                  total_revenue:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        amount:
+                          type: string
+                      description: >-
+                        Coin defines a token with a denomination and an amount.
+
+
+                        NOTE: The amount field is an Int which implements the
+                        custom method
+
+                        signatures required by gogoproto.
+                title: >-
+                  Merchant Revenue represents kpis and revenue data for a
+                  merchant
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: merchant_address
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
   /kiichain/kiichain3/payfi/params:
     get:
       summary: Parameters queries the parameters of the module.
@@ -35768,6 +36473,75 @@ paths:
                     '@type':
                       type: string
                   additionalProperties: {}
+      tags:
+        - Query
+  /kiichain/kiichain3/payfi/payment:
+    get:
+      operationId: KiichainKiichain3PayfiPayment
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              payment:
+                type: object
+                properties:
+                  payment_id:
+                    type: string
+                    format: int64
+                  payer_address:
+                    type: string
+                  merchant_address:
+                    type: string
+                  timestamp:
+                    type: string
+                    format: int64
+                  amount:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        amount:
+                          type: string
+                      description: >-
+                        Coin defines a token with a denomination and an amount.
+
+
+                        NOTE: The amount field is an Int which implements the
+                        custom method
+
+                        signatures required by gogoproto.
+                title: Payment represents a payment from a payer to a merchant
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: payment_id
+          in: query
+          required: false
+          type: string
+        - name: merchant_address
+          in: query
+          required: false
+          type: string
       tags:
         - Query
   /kiichain/tokenfactory/denoms/allow_list:
@@ -60707,6 +61481,55 @@ definitions:
       token_release_amount:
         type: string
         format: uint64
+  kiichain.kiichain3.payfi.Merchant:
+    type: object
+    properties:
+      merchant_address:
+        type: string
+      creator_address:
+        type: string
+      business_name:
+        type: string
+      business_address:
+        type: string
+      business_phone:
+        type: string
+      business_email:
+        type: string
+      business_description:
+        type: string
+      kyc_status:
+        type: boolean
+      kyc_timestamp:
+        type: string
+        format: int64
+      kyc_expiration_timestamp:
+        type: string
+        format: int64
+    title: Merchant represents a registered merchant in the system
+  kiichain.kiichain3.payfi.MerchantRevenue:
+    type: object
+    properties:
+      merchant_address:
+        type: string
+      total_payments:
+        type: string
+        format: int64
+      total_revenue:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            Coin defines a token with a denomination and an amount.
+
+            NOTE: The amount field is an Int which implements the custom method
+            signatures required by gogoproto.
+    title: Merchant Revenue represents kpis and revenue data for a merchant
   kiichain.kiichain3.payfi.MsgPayMerchantResponse:
     type: object
     properties:
@@ -60734,6 +61557,326 @@ definitions:
   kiichain.kiichain3.payfi.Params:
     type: object
     description: Params defines the parameters for the module.
+  kiichain.kiichain3.payfi.Payment:
+    type: object
+    properties:
+      payment_id:
+        type: string
+        format: int64
+      payer_address:
+        type: string
+      merchant_address:
+        type: string
+      timestamp:
+        type: string
+        format: int64
+      amount:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            Coin defines a token with a denomination and an amount.
+
+            NOTE: The amount field is an Int which implements the custom method
+            signatures required by gogoproto.
+    title: Payment represents a payment from a payer to a merchant
+  kiichain.kiichain3.payfi.QueryAllMerchantsResponse:
+    type: object
+    properties:
+      merchants:
+        type: array
+        items:
+          type: object
+          properties:
+            merchant_address:
+              type: string
+            creator_address:
+              type: string
+            business_name:
+              type: string
+            business_address:
+              type: string
+            business_phone:
+              type: string
+            business_email:
+              type: string
+            business_description:
+              type: string
+            kyc_status:
+              type: boolean
+            kyc_timestamp:
+              type: string
+              format: int64
+            kyc_expiration_timestamp:
+              type: string
+              format: int64
+          title: Merchant represents a registered merchant in the system
+      pagination:
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            title: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+        description: |-
+          PageResponse is to be embedded in gRPC response messages where the
+          corresponding request message has used PageRequest.
+
+           message SomeResponse {
+                   repeated Bar results = 1;
+                   PageResponse page = 2;
+           }
+  kiichain.kiichain3.payfi.QueryAllPaymentsResponse:
+    type: object
+    properties:
+      payments:
+        type: array
+        items:
+          type: object
+          properties:
+            payment_id:
+              type: string
+              format: int64
+            payer_address:
+              type: string
+            merchant_address:
+              type: string
+            timestamp:
+              type: string
+              format: int64
+            amount:
+              type: array
+              items:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
+          title: Payment represents a payment from a payer to a merchant
+      pagination:
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            title: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+        description: |-
+          PageResponse is to be embedded in gRPC response messages where the
+          corresponding request message has used PageRequest.
+
+           message SomeResponse {
+                   repeated Bar results = 1;
+                   PageResponse page = 2;
+           }
+  kiichain.kiichain3.payfi.QueryAllRevenueResponse:
+    type: object
+    properties:
+      revenues:
+        type: array
+        items:
+          type: object
+          properties:
+            merchant_address:
+              type: string
+            total_payments:
+              type: string
+              format: int64
+            total_revenue:
+              type: array
+              items:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
+          title: Merchant Revenue represents kpis and revenue data for a merchant
+      pagination:
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            title: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+        description: |-
+          PageResponse is to be embedded in gRPC response messages where the
+          corresponding request message has used PageRequest.
+
+           message SomeResponse {
+                   repeated Bar results = 1;
+                   PageResponse page = 2;
+           }
+  kiichain.kiichain3.payfi.QueryMerchantPaymentsResponse:
+    type: object
+    properties:
+      payments:
+        type: array
+        items:
+          type: object
+          properties:
+            payment_id:
+              type: string
+              format: int64
+            payer_address:
+              type: string
+            merchant_address:
+              type: string
+            timestamp:
+              type: string
+              format: int64
+            amount:
+              type: array
+              items:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
+          title: Payment represents a payment from a payer to a merchant
+      pagination:
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            title: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+        description: |-
+          PageResponse is to be embedded in gRPC response messages where the
+          corresponding request message has used PageRequest.
+
+           message SomeResponse {
+                   repeated Bar results = 1;
+                   PageResponse page = 2;
+           }
+  kiichain.kiichain3.payfi.QueryMerchantResponse:
+    type: object
+    properties:
+      merchant:
+        type: object
+        properties:
+          merchant_address:
+            type: string
+          creator_address:
+            type: string
+          business_name:
+            type: string
+          business_address:
+            type: string
+          business_phone:
+            type: string
+          business_email:
+            type: string
+          business_description:
+            type: string
+          kyc_status:
+            type: boolean
+          kyc_timestamp:
+            type: string
+            format: int64
+          kyc_expiration_timestamp:
+            type: string
+            format: int64
+        title: Merchant represents a registered merchant in the system
+  kiichain.kiichain3.payfi.QueryMerchantRevenueResponse:
+    type: object
+    properties:
+      revenue:
+        type: object
+        properties:
+          merchant_address:
+            type: string
+          total_payments:
+            type: string
+            format: int64
+          total_revenue:
+            type: array
+            items:
+              type: object
+              properties:
+                denom:
+                  type: string
+                amount:
+                  type: string
+              description: >-
+                Coin defines a token with a denomination and an amount.
+
+
+                NOTE: The amount field is an Int which implements the custom
+                method
+
+                signatures required by gogoproto.
+        title: Merchant Revenue represents kpis and revenue data for a merchant
   kiichain.kiichain3.payfi.QueryParamsResponse:
     type: object
     properties:
@@ -60741,6 +61884,40 @@ definitions:
         description: params holds all the parameters of this module.
         type: object
     description: QueryParamsResponse is response type for the Query/Params RPC method.
+  kiichain.kiichain3.payfi.QueryPaymentResponse:
+    type: object
+    properties:
+      payment:
+        type: object
+        properties:
+          payment_id:
+            type: string
+            format: int64
+          payer_address:
+            type: string
+          merchant_address:
+            type: string
+          timestamp:
+            type: string
+            format: int64
+          amount:
+            type: array
+            items:
+              type: object
+              properties:
+                denom:
+                  type: string
+                amount:
+                  type: string
+              description: >-
+                Coin defines a token with a denomination and an amount.
+
+
+                NOTE: The amount field is an Int which implements the custom
+                method
+
+                signatures required by gogoproto.
+        title: Payment represents a payment from a payer to a merchant
   cosmos.bank.v1beta1.AllowList:
     type: object
     properties:
