@@ -8,9 +8,170 @@ import (
 	keepertest "github.com/kiichain/kiichain3/testutil/keeper"
 	"github.com/kiichain/kiichain3/x/payfi/keeper"
 	"github.com/kiichain/kiichain3/x/payfi/types"
+	"github.com/stretchr/testify/require"
 )
 
-func setupMsgServer(t testing.TB) (types.MsgServer, context.Context) {
+func setupMsgServer(t testing.TB) (*keeper.Keeper, types.MsgServer, context.Context) {
 	k, ctx := keepertest.PayfiKeeper(t)
-	return keeper.NewMsgServerImpl(*k), sdk.WrapSDKContext(ctx)
+	return k, keeper.NewMsgServerImpl(*k), sdk.WrapSDKContext(ctx)
+}
+func TestRegisterMerchant(t *testing.T) {
+	_, msgServer, ctx := setupMsgServer(t)
+
+	tests := []struct {
+		name    string
+		msg     *types.MsgRegisterMerchant
+		wantErr bool
+	}{
+		{
+			name: "valid registration",
+			msg: &types.MsgRegisterMerchant{
+				CreatorAddress:      "kii1x2w87cvt5mqjncav4lxy8yfreynn273xg764cm",
+				BusinessName:        "Test Business",
+				BusinessAddress:     "123 Test St",
+				BusinessPhone:       "1234567890",
+				BusinessEmail:       "test@test.com",
+				BusinessDescription: "Test Description",
+			},
+			wantErr: false,
+		},
+		{
+			name: "duplicate merchant",
+			msg: &types.MsgRegisterMerchant{
+				CreatorAddress:      "kii1x2w87cvt5mqjncav4lxy8yfreynn273xg764cm",
+				BusinessName:        "Test Business",
+				BusinessAddress:     "123 Test St",
+				BusinessPhone:       "1234567890",
+				BusinessEmail:       "test@test.com",
+				BusinessDescription: "Test Description",
+			},
+			wantErr: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			resp, err := msgServer.RegisterMerchant(ctx, tt.msg)
+			if tt.wantErr {
+				if err == nil {
+					t.Error("RegisterMerchant() error = nil, wantErr = true")
+				}
+				return
+			}
+			if err != nil {
+				t.Errorf("RegisterMerchant() error = %v, wantErr = false", err)
+				return
+			}
+			if resp == nil {
+				t.Error("RegisterMerchant() response is nil")
+				return
+			}
+			if resp.MerchantAddress == "" {
+				t.Error("RegisterMerchant() merchant address is empty")
+			}
+		})
+	}
+}
+
+func TestVerifyMerchant(t *testing.T) {
+	_, msgServer, ctx := setupMsgServer(t)
+
+	// First register a merchant
+	registerMsg := &types.MsgRegisterMerchant{
+		CreatorAddress:      "kii1x2w87cvt5mqjncav4lxy8yfreynn273xg764cm",
+		BusinessName:        "Test Business",
+		BusinessAddress:     "123 Test St",
+		BusinessPhone:       "1234567890",
+		BusinessEmail:       "test@test.com",
+		BusinessDescription: "Test Description",
+	}
+	registerResp, err := msgServer.RegisterMerchant(ctx, registerMsg)
+	if err != nil {
+		t.Fatalf("Failed to register merchant: %v", err)
+	}
+
+	tests := []struct {
+		name    string
+		msg     *types.MsgVerifyMerchant
+		wantErr bool
+	}{
+		{
+			name: "valid verification",
+			msg: &types.MsgVerifyMerchant{
+				KycAdminAddress: "kii1x2w87cvt5mqjncav4lxy8yfreynn273xg764cm",
+				MerchantAddress: registerResp.MerchantAddress,
+			},
+			wantErr: false,
+		},
+		{
+			name: "non-existent merchant",
+			msg: &types.MsgVerifyMerchant{
+				KycAdminAddress: "kii1x2w87cvt5mqjncav4lxy8yfreynn273xg764cm",
+				MerchantAddress: "kii1nonexistent",
+			},
+			wantErr: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			resp, err := msgServer.VerifyMerchant(ctx, tt.msg)
+			if tt.wantErr {
+				if err == nil {
+					t.Error("VerifyMerchant() error = nil, wantErr = true")
+				}
+				return
+			}
+			if err != nil {
+				t.Errorf("VerifyMerchant() error = %v, wantErr = false", err)
+				return
+			}
+			if resp == nil {
+				t.Error("VerifyMerchant() response is nil")
+			}
+		})
+	}
+}
+
+func TestValidFlagChanged(t *testing.T) {
+	k, msgServer, ctx := setupMsgServer(t)
+
+	registerMsg := &types.MsgRegisterMerchant{
+		CreatorAddress:      "kii1x2w87cvt5mqjncav4lxy8yfreynn273xg764cm",
+		BusinessName:        "Test Business",
+		BusinessAddress:     "123 Test St",
+		BusinessPhone:       "1234567890",
+		BusinessEmail:       "test@test.com",
+		BusinessDescription: "Test Description",
+	}
+	registerResp, err := msgServer.RegisterMerchant(ctx, registerMsg)
+	if err != nil {
+		t.Fatalf("Failed to register merchant: %v", err)
+	}
+
+	require.False(t, k.GetMerchant(
+		sdk.UnwrapSDKContext(ctx),
+		sdk.MustAccAddressFromBech32(registerResp.MerchantAddress),
+	).KycStatus)
+
+	verifyMsg := &types.MsgVerifyMerchant{
+		KycAdminAddress: "kii1x2w87cvt5mqjncav4lxy8yfreynn273xg764cm",
+		MerchantAddress: registerResp.MerchantAddress,
+	}
+	_, err = msgServer.VerifyMerchant(ctx, verifyMsg)
+	if err != nil {
+		t.Fatalf("Failed to verify merchant: %v", err)
+	}
+
+	// Check if the merchant is valid
+	merchant := k.GetMerchant(
+		sdk.UnwrapSDKContext(ctx),
+		sdk.MustAccAddressFromBech32(registerResp.MerchantAddress),
+	)
+	if merchant == nil {
+		t.Fatalf("Merchant not found")
+	}
+	if !merchant.KycStatus {
+		t.Fatalf("Merchant is not valid")
+	}
 }

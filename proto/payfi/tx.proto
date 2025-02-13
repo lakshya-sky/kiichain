@@ -3,11 +3,69 @@ package kiichain.kiichain3.payfi;
 
 // this line is used by starport scaffolding # proto/tx/import
 
+import "cosmos/base/v1beta1/coin.proto";
+import "gogoproto/gogo.proto";
+
 option go_package = "github.com/kiichain/kiichain3/x/payfi/types";
 
 // Msg defines the Msg service.
 service Msg {
-    // this line is used by starport scaffolding # proto/tx/rpc
+  // this line is used by starport scaffolding # proto/tx/rpc
+
+  // RegisterMerchant creates a new merchant account with provided business details
+  rpc RegisterMerchant(MsgRegisterMerchant) returns (MsgRegisterMerchantResponse);
+
+  // VerifyMerchant allows KYC admins to verify merchant accounts after KYC checks
+  rpc VerifyMerchant(MsgVerifyMerchant) returns (MsgVerifyMerchantResponse);
+
+  // PayMerchant processes a payment from a payer to a merchant with specified amount
+  rpc PayMerchant(MsgPayMerchant) returns (MsgPayMerchantResponse);
 }
 
 // this line is used by starport scaffolding # proto/tx/message
+
+// MsgRegisterMerchant represents a message to register a new merchant on the platform
+// with their business details like name, address, contact information etc.
+message MsgRegisterMerchant {
+  string creator_address = 1;
+  string business_name = 2;
+  string business_address = 3;
+  string business_phone = 4;
+  string business_email = 5;
+  string business_description = 6;
+}
+
+// MsgRegisterMerchantResponse is returned after successful merchant registration
+// containing the newly created merchant address
+message MsgRegisterMerchantResponse {
+  string merchant_address = 1;
+}
+
+// MsgVerifyMerchant represents a message sent by a KYC admin to verify
+// a registered merchant after completing KYC checks
+message MsgVerifyMerchant {
+  string kyc_admin_address = 1;
+  string merchant_address = 2;
+}
+
+// MsgVerifyMerchantResponse is returned after successful merchant verification
+message MsgVerifyMerchantResponse {
+  string merchant_address = 1;
+}
+
+// MsgPayMerchant represents a payment message sent to a merchant
+// including payment amount and invoice reference
+message MsgPayMerchant {
+  string merchant_address = 1;
+  string payer_address = 2;
+  string invoice_reference = 3;
+  repeated cosmos.base.v1beta1.Coin amount = 4 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+}
+
+// MsgPayMerchantResponse is returned after successful payment to a merchant
+message MsgPayMerchantResponse {
+  string merchant_address = 1;
+}

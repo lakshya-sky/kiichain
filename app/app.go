@@ -549,6 +549,9 @@ func New(
 		app.keys[payfitypes.StoreKey],
 		app.keys[payfitypes.StoreKey],
 		app.GetSubspace(payfitypes.ModuleName),
+		app.AccountKeeper,
+		app.BankKeeper,
+		app.StakingKeeper,
 	)
 
 	// The last arguments can contain custom message handlers, and custom query handlers,
@@ -750,7 +753,7 @@ func New(
 		transferModule,
 		epochModule,
 		tokenfactorymodule.NewAppModule(app.TokenFactoryKeeper, app.AccountKeeper, app.BankKeeper),
-		payfimodule.NewAppModule(appCodec, app.PayfiKeeper, app.AccountKeeper, app.BankKeeper),
+		payfimodule.NewAppModule(appCodec, app.PayfiKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper),
 		authzmodule.NewAppModule(appCodec, app.AuthzKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
@@ -869,7 +872,7 @@ func New(
 		transferModule,
 		epochModule,
 		tokenfactorymodule.NewAppModule(app.TokenFactoryKeeper, app.AccountKeeper, app.BankKeeper),
-		payfimodule.NewAppModule(appCodec, app.PayfiKeeper, app.AccountKeeper, app.BankKeeper),
+		payfimodule.NewAppModule(appCodec, app.PayfiKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper),
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 	app.sm.RegisterStoreDecoders()
